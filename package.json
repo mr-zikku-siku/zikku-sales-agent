@@ -1,0 +1,12 @@
+{
+  "name": "nayra-sales-agent",
+  "version": "1.0.0",
+  "description": "NAYRA AI Sales Agent - Facebook Messenger auto-reply bot",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
