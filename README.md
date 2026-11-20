@@ -1,6 +1,8 @@
-# NAYRA AI Sales Agent — Facebook Messenger bot
+# Zikku AI Sales Agent — Facebook Messenger bot
 
-24/7 AI sales agent for the NAYRA Facebook Page. Answers price questions,
+Multi-shop agent: one agent serves any Facebook Page. The shop (products, prices) is per-Page config — the first Page is Premium Zad (NAYRA heels).
+
+24/7 AI sales agent for any Facebook Page. Answers price questions,
 takes orders (name → phone → address → confirm) and saves them.
 
 ## What it does

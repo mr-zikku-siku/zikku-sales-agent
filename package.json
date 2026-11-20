@@ -1,7 +1,7 @@
 {
-  "name": "nayra-sales-agent",
+  "name": "zikku-sales-agent",
   "version": "1.0.0",
-  "description": "NAYRA AI Sales Agent - Facebook Messenger auto-reply bot",
+  "description": "Zikku AI Sales Agent - Facebook Messenger auto-reply bot for any shop Page",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

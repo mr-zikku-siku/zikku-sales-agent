@@ -1,6 +1,6 @@
-// NAYRA AI Sales Agent - Facebook Messenger webhook server
+// Zikku AI Sales Agent - Facebook Messenger webhook server (multi-shop: one agent, any Page)
 // Receives Page messages, replies with Gemini AI, takes orders.
-// Product: PREMIUM (BRAUN) HEELS - 1890 BDT, COD, free delivery.
+// Default shop config below is for the Premium Zad Page (NAYRA heels).
 // Language: Bengali. Runs 24/7 on a cloud host (Firebase/Render).
 //
 // Env vars:
@@ -229,10 +229,10 @@ app.post('/webhook', async (req, res) => {
   }
 });
 
-app.get('/', (req, res) => res.send('NAYRA AI Sales Agent is running. Webhook: /webhook'));
+app.get('/', (req, res) => res.send("Zikku Sales Agent is running. Webhook: /webhook"));
 app.get('/health', (req, res) => res.json({ ok: true, gemini: !!GEMINI_KEY, pageToken: !!PAGE_ACCESS_TOKEN }));
 
 app.listen(PORT, () => {
-  console.log('NAYRA Sales Agent listening on port ' + PORT);
+  console.log("Zikku Sales Agent listening on port " + PORT);
   console.log('Gemini key loaded:', !!GEMINI_KEY, '| Page token set:', !!PAGE_ACCESS_TOKEN);
 });
