@@ -22,18 +22,29 @@ const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN || '';
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN || 'zikku-verify-2026';
 const GEMINI_MODEL = 'gemini-flash-lite-latest';
 
-// ---- Gemini API key (read from the Zoovi bot file at runtime) ----
-function loadGeminiKey() {
+// ---- Gemini API key ----
+// Priority: env var GEMINI_API_KEY, then the local Zoovi bot file,
+// then the public Zoovi file (https://zoovi.web.app/zoovi-ai.js).
+// The key value is never written into this file.
+async function loadGeminiKey() {
+  if (process.env.GEMINI_API_KEY) return process.env.GEMINI_API_KEY;
   try {
     const p = path.join(process.env.HOME || '/home/hatch', 'workspace/zoovi-web/public/zoovi-ai.js');
     const src = fs.readFileSync(p, 'utf8');
     const m = src.match(/var API_KEY\s*=\s*'([^']+)'/);
-    return m ? m[1] : '';
-  } catch (e) {
-    return '';
-  }
+    if (m) return m[1];
+  } catch (e) { /* local file not present (e.g. on Render) */ }
+  try {
+    const res = await fetch('https://zoovi.web.app/zoovi-ai.js', { signal: AbortSignal.timeout(10000) });
+    if (res.ok) {
+      const src = await res.text();
+      const m = src.match(/var API_KEY\s*=\s*'([^']+)'/);
+      if (m) return m[1];
+    }
+  } catch (e) { /* offline */ }
+  return '';
 }
-const GEMINI_KEY = loadGeminiKey();
+let GEMINI_KEY = '';
 
 // ---- Shop knowledge (single source of truth) ----
 const SHOP = {
@@ -232,7 +243,10 @@ app.post('/webhook', async (req, res) => {
 app.get('/', (req, res) => res.send("Zikku Sales Agent is running. Webhook: /webhook"));
 app.get('/health', (req, res) => res.json({ ok: true, gemini: !!GEMINI_KEY, pageToken: !!PAGE_ACCESS_TOKEN }));
 
-app.listen(PORT, () => {
-  console.log("Zikku Sales Agent listening on port " + PORT);
-  console.log('Gemini key loaded:', !!GEMINI_KEY, '| Page token set:', !!PAGE_ACCESS_TOKEN);
-});
+(async () => {
+  GEMINI_KEY = await loadGeminiKey();
+  app.listen(PORT, () => {
+    console.log("Zikku Sales Agent listening on port " + PORT);
+    console.log('Gemini key loaded:', !!GEMINI_KEY, '| Page token set:', !!PAGE_ACCESS_TOKEN);
+  });
+})();
